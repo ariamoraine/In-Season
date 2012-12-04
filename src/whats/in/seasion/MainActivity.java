@@ -64,7 +64,7 @@ public class MainActivity extends Activity {
 
 				LinkedHashMap<String, String> map = new LinkedHashMap<String, String>(); // started
 
-				for (int i = 0; i < states.length - 1; i++) { // filling hashmap
+				for (int i = 0; i < states.length-1; i++) { // filling hashmap
 					map.put(states[i], baseUrl + states[i]);
 					System.out.println("just filled hashmap");
 				}
@@ -99,12 +99,14 @@ public class MainActivity extends Activity {
 		
 			public void run() {
 			
-				System.out.println("Inside onPostExecute");
+				System.out.println("Inside run");
 				String start = "<div class=\"state-produce\">";
+				System.out.println("under start");
 				String end = "</div></div>";
+				System.out.println("under div div");
 				String part = builder.substring(builder.indexOf(start)
 						+ start.length());
-				System.out.println("inside the pull");
+				System.out.println("under string part");
 				BufferedReader reader = null;
 
 				try {
