@@ -56,7 +56,9 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		spinner();
+
 	}
+
 	public void spinner() {
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
 				android.R.layout.simple_spinner_item, states);
@@ -70,13 +72,11 @@ public class MainActivity extends Activity {
 				String stringOfItem = "";
 				stringOfItem = item.toString(); // convert
 				System.out.println(stringOfItem);
-				
 
 				LinkedHashMap<String, String> map = new LinkedHashMap<String, String>(); // started
 
 				for (int i = 0; i < states.length - 1; i++) { // filling hashmap
 					map.put(states[i], baseUrl + states[i]);
-					System.out.println("just filled hashmap");
 				}
 
 				Iterator<Map.Entry<String, String>> iter = map.entrySet()
@@ -125,13 +125,47 @@ public class MainActivity extends Activity {
 				}
 				try {
 					for (String line; (line = reader.readLine()) != null;) {
-						builder.append(line.trim());
-						//System.out.println(line);
-						//System.out.println("above builder");
-						//System.out.println(builder);
-						String htmlData = line;   
-						
+						// System.out.println("checking where disconnect is");
+						// System.out.println(line);
+						builder.append(line.trim()).toString();
+						// System.out.println(line);
+						// System.out.println("above builder");
+						// System.out.println(builder);
 					}
+					System.out.println("Inside run");
+					System.out.println(builder);
+					System.out.println(urlOfTestValue);
+					// the next two lines are setting the beginning and end of
+					// what we want
+					start = "<div class=\"state-produce\">";
+					end = "</div></div>";
+					System.out.println("under div div");
+					System.out.println(start.length());
+					System.out.println(end.length());
+					System.out.println(builder);
+					// This next line is where it breaks :(
+					String part = builder.substring(builder.indexOf(start)
+							+ start.length());
+					System.out.println(part);
+					System.out.println("under string part");
+					html = part.substring(0, part.indexOf(end));
+					System.out.println(html);
+					System.out.println("testing just made html var");
+					// html = start.substring(0, start.indexOf(end));
+					html = html.replaceAll("<h3>", " NEW MONTH");
+					html = html.replaceAll("</h3>", ", ");
+					html = html.replace("- ", "");
+					html = html.replaceAll("\\<.*?>", "");
+					html = html.replace("Christmas Trees,", "");
+					html = html.replace("Wreathes", "");
+					html = html.replace(
+							"Turkey Bourbon Red, Turkey Standard Bronze",
+							"Turkey");
+					html = html.replace("Oysters,", "Oysters -");
+					System.out.println(html);
+					System.out.println("Under all the html shit");
+					builder = new StringBuffer();
+
 				} catch (IOException e) {
 					Log.i("showTime", e.getMessage());
 				}
@@ -143,35 +177,6 @@ public class MainActivity extends Activity {
 					}
 			}
 
-			System.out.println("Inside run");
-			// the next two lines are setting the beginning and end of what we
-			// want.
-			start = "<div class=\"state-produce\">";
-			end = "</div></div>";
-			System.out.println("under div div");
-			System.out.println(start.length());
-			System.out.println(end.length());
-			//System.out.println(builder);
-			String part = builder.substring(builder.indexOf(start)
-					+ start.length());
-			// + start.length()
-			System.out.println(part);
-			System.out.println("under string part");
-			html = part.substring(0, part.indexOf(end));
-			System.out.println(html);
-			System.out.println("testing just made html var");
-			// html = start.substring(0, start.indexOf(end));
-			html = html.replaceAll("<h3>", " NEW MONTH");
-			html = html.replaceAll("</h3>", ", ");
-			html = html.replace("- ", "");
-			html = html.replaceAll("\\<.*?>", "");
-			html = html.replace("Christmas Trees,", "");
-			html = html.replace("Wreathes", "");
-			html = html.replace("Turkey Bourbon Red, Turkey Standard Bronze",
-					"Turkey");
-			html = html.replace("Oysters,", "Oysters -");
-			System.out.println(html);
-			System.out.println("Under all the html shit");
 			return html;
 		}
 
@@ -179,55 +184,59 @@ public class MainActivity extends Activity {
 
 			veggiesOne = (TextView) findViewById(R.id.veggiesOne);
 			veggiesTwo = (TextView) findViewById(R.id.veggiesTwo);
+			String veggiesTextOne = null;
+			String veggiesTextTwo = null;
 
 			System.out.println("inside onpostexecute");
 			String[] monthList = html.split("NEW MONTH");
+
+			System.out.println(monthList.length);
 			String[] ids = TimeZone.getAvailableIDs(-8 * 60 * 60 * 1000);
 			SimpleTimeZone pdt = new SimpleTimeZone(-8 * 60 * 60 * 1000, ids[0]);
 			Calendar calendar = new GregorianCalendar(pdt);
 			System.out.println("under calendarsetting");
-			if (calendar.get(Calendar.MONTH) == 0) {
-				veggiesOne.setText(monthList[1]);
-				veggiesTwo.setText(monthList[2]);
-			} else if (calendar.get(Calendar.MONTH) == 1) {
-				veggiesOne.setText(monthList[3]);
-				veggiesTwo.setText(monthList[4]);
-			} else if (calendar.get(Calendar.MONTH) == 2) {
-				veggiesOne.setText(monthList[5]);
-				veggiesTwo.setText(monthList[6]);
-			} else if (calendar.get(Calendar.MONTH) == 3) {
-				veggiesOne.setText(monthList[7]);
-				veggiesTwo.setText(monthList[8]);
-			} else if (calendar.get(Calendar.MONTH) == 4) {
-				veggiesOne.setText(monthList[9]);
-				veggiesTwo.setText(monthList[10]);
-			} else if (calendar.get(Calendar.MONTH) == 5) {
-				veggiesOne.setText(monthList[11]);
-				veggiesTwo.setText(monthList[12]);
-			} else if (calendar.get(Calendar.MONTH) == 6) {
-				veggiesOne.setText(monthList[13]);
-				veggiesTwo.setText(monthList[14]);
-			} else if (calendar.get(Calendar.MONTH) == 7) {
-				veggiesOne.setText(monthList[15]);
-				veggiesTwo.setText(monthList[16]);
-			} else if (calendar.get(Calendar.MONTH) == 8) {
-				veggiesOne.setText(monthList[17]);
-				veggiesTwo.setText(monthList[18]);
-			} else if (calendar.get(Calendar.MONTH) == 9) {
-				veggiesOne.setText(monthList[19]);
-				veggiesTwo.setText(monthList[20]);
-			} else if (calendar.get(Calendar.MONTH) == 10) {
-				System.out.println("inside november");
-				veggiesOne.setText(monthList[21]);
-				veggiesTwo.setText(monthList[22]);
-			} else if (calendar.get(Calendar.MONTH) == 11) {
-				System.out.println("Inside month 11");
-				veggiesOne.setText(monthList[23]);
-				System.out.println(monthList[23]);
-				System.out.println("Updated first textbox");
-				veggiesTwo.setText(monthList[24]);
-				System.out.print(monthList[24]);
-				System.out.println("updated second textbox");
+
+			LinkedHashMap<Integer, String> monthMap = new LinkedHashMap<Integer, String>();
+			monthMap.put(0, "January");
+			monthMap.put(1, "February");
+			monthMap.put(2, "March");
+			monthMap.put(3, "April");
+			monthMap.put(4, "May");
+			monthMap.put(5, "June");
+			monthMap.put(6, "July");
+			monthMap.put(7, "August");
+			monthMap.put(8, "September");
+			monthMap.put(9, "October");
+			monthMap.put(10, "Novemver");
+			monthMap.put(11, "December");
+
+			String ourMonth = (monthMap.get(calendar.get(Calendar.MONTH)));
+
+			for (String veggies : monthList) {
+				System.out.println(veggies);
+				if (veggies.indexOf("Early " + ourMonth) > -1) {
+					veggiesTextOne = veggies;
+				} else if (veggies.indexOf("Late " + ourMonth) > -1) {
+					veggiesTextTwo = veggies;
+				} else {
+					System.out.print("still looking");
+				}
+			}
+			if (veggiesTextOne == null && veggiesTextTwo == null) {
+				veggiesOne.setText("This month has nothing in season");
+				veggiesTwo.setText(" ");
+			} else {
+				if (veggiesTextOne != null) {
+					veggiesOne.setText(veggiesTextOne);
+				} else {
+					veggiesOne.setText("Early has nothing");
+				}
+
+				if (veggiesTextTwo != null) {
+					veggiesTwo.setText(veggiesTextTwo);
+				} else {
+					veggiesTwo.setText("Late has nothing");
+				}
 			}
 		}
 	}
