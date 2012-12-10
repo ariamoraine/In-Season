@@ -15,6 +15,9 @@ import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
 import android.app.Activity;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -40,10 +43,10 @@ public class MainActivity extends Activity {
 	public String baseUrl = "http://www.simplesteps.org/eat-local/state/";
 	public StringBuffer builder = new StringBuffer();
 
-	String[] states = { "alabama", "alaska", "arizona", "arkansas",
-			"california", "colorado", "connecticut", "delaware", "florida",
-			"gorgia", "hawaii", "idaho", "illinois", "indiana", "iowa",
-			"kansas", "kentucky", "louisiana", "maine", "maryland",
+	String[] states = { "Pick A State", "alabama", "alaska", "arizona",
+			"arkansas", "california", "colorado", "connecticut", "delaware",
+			"florida", "gorgia", "hawaii", "idaho", "illinois", "indiana",
+			"iowa", "kansas", "kentucky", "louisiana", "maine", "maryland",
 			"massachustts", "michigan", "minnesota", "mississippi", "missouri",
 			"montana", "nebraska", "nevada", "new-hampshire", "new-jersry",
 			"new-mexico", "new-york", "north-carolina", "north-dakota", "ohio",
@@ -60,46 +63,44 @@ public class MainActivity extends Activity {
 	}
 
 	public void spinner() {
+		//setting up my spinner
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
 				android.R.layout.simple_spinner_item, states);
 		spinner = (Spinner) findViewById(R.id.spinner);
 		spinner.setAdapter(adapter);
 		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
-			public void onItemSelected(AdapterView<?> arg0, View arg1,
-					int arg2, long arg3) {
+			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 				Object item = spinner.getSelectedItem(); // selected state
 				String stringOfItem = "";
 				stringOfItem = item.toString(); // convert
-				System.out.println(stringOfItem);
 
-				LinkedHashMap<String, String> map = new LinkedHashMap<String, String>(); // started
+				if (stringOfItem == "Pick A State") {
+					System.out.print("nothing here yet");
+				} else {
+					LinkedHashMap<String, String> map = new LinkedHashMap<String, String>(); // starting hashmap
 
-				for (int i = 0; i < states.length - 1; i++) { // filling hashmap
-					map.put(states[i], baseUrl + states[i]);
+					for (int i = 0; i < states.length - 1; i++) { // filling hashmap
+						map.put(states[i], baseUrl + states[i]);
+					}
+
+					Iterator<Map.Entry<String, String>> iter = map.entrySet()
+							.iterator();
+
+					testValue = map.get(stringOfItem);
+
+					try {
+						urlOfTestValue = new URL(testValue);
+
+						MyAsyncTask aTask = new MyAsyncTask();
+
+						aTask.execute(urlOfTestValue);
+					} catch (MalformedURLException e) {
+						System.out.println("pullVeggies failed ");
+						e.printStackTrace();
+					}
+
 				}
-
-				Iterator<Map.Entry<String, String>> iter = map.entrySet()
-						.iterator();
-
-				testValue = map.get(stringOfItem);
-				System.out.println(testValue);
-				System.out.println(stringOfItem);
-
-				try {
-					urlOfTestValue = new URL(testValue);
-					System.out.println("inside try for pullVeggies");
-					MyAsyncTask aTask = new MyAsyncTask();
-					System.out.println(testValue);
-					System.out.println(urlOfTestValue);
-					aTask.execute(urlOfTestValue);
-					// pullVeggies(new URL(testValue));
-					System.out.println("under pullVeggies");
-				} catch (MalformedURLException e) {
-					System.out.println("pullVeggies failed ");
-					e.printStackTrace();
-				}
-
 			}
 
 			public void onNothingSelected(AdapterView<?> arg0) {
@@ -110,12 +111,14 @@ public class MainActivity extends Activity {
 	}
 
 	public class MyAsyncTask extends AsyncTask<URL, Void, String> {
-
+		//the AsyncTask for our scraping
+		
 		protected String doInBackground(URL... params) {
+			//where we do all of our site scraping
 
 			try {
 				try {
-					System.out.println(urlOfTestValue);
+					//opening up the stream to our chosen URL
 					reader = new BufferedReader(new InputStreamReader(
 							urlOfTestValue.openStream(), "UTF-8"));
 				} catch (UnsupportedEncodingException e) {
@@ -124,34 +127,21 @@ public class MainActivity extends Activity {
 					Log.i("showTime", e.getMessage());
 				}
 				try {
+					
 					for (String line; (line = reader.readLine()) != null;) {
-						// System.out.println("checking where disconnect is");
-						// System.out.println(line);
 						builder.append(line.trim()).toString();
-						// System.out.println(line);
-						// System.out.println("above builder");
-						// System.out.println(builder);
+						//adding all the lines to our stringBuffer
 					}
-					System.out.println("Inside run");
-					System.out.println(builder);
-					System.out.println(urlOfTestValue);
-					// the next two lines are setting the beginning and end of
-					// what we want
 					start = "<div class=\"state-produce\">";
+					//start is a built in part of string buffer and the end of it is where the html that we what is
 					end = "</div></div>";
-					System.out.println("under div div");
-					System.out.println(start.length());
-					System.out.println(end.length());
-					System.out.println(builder);
-					// This next line is where it breaks :(
+					//end is also built in and the end of the html that we want.
+
 					String part = builder.substring(builder.indexOf(start)
 							+ start.length());
-					System.out.println(part);
-					System.out.println("under string part");
+					//putting all the pieces together.
+					
 					html = part.substring(0, part.indexOf(end));
-					System.out.println(html);
-					System.out.println("testing just made html var");
-					// html = start.substring(0, start.indexOf(end));
 					html = html.replaceAll("<h3>", " NEW MONTH");
 					html = html.replaceAll("</h3>", ", ");
 					html = html.replace("- ", "");
@@ -162,9 +152,8 @@ public class MainActivity extends Activity {
 							"Turkey Bourbon Red, Turkey Standard Bronze",
 							"Turkey");
 					html = html.replace("Oysters,", "Oysters -");
-					System.out.println(html);
-					System.out.println("Under all the html shit");
-					builder = new StringBuffer();
+					//all of this is pulling all text we want out of the html tags
+					builder = new StringBuffer(); //html is not the var we want and we need to restart builder for next time this code is run
 
 				} catch (IOException e) {
 					Log.i("showTime", e.getMessage());
@@ -181,21 +170,21 @@ public class MainActivity extends Activity {
 		}
 
 		protected void onPostExecute(String html) {
-
+			//onPostExecute is a built in part of AsyncTask and auto starts when doInBackground is done
+			
 			veggiesOne = (TextView) findViewById(R.id.veggiesOne);
 			veggiesTwo = (TextView) findViewById(R.id.veggiesTwo);
 			String veggiesTextOne = null;
 			String veggiesTextTwo = null;
 
-			System.out.println("inside onpostexecute");
 			String[] monthList = html.split("NEW MONTH");
-
-			System.out.println(monthList.length);
+			//monthList is an array of our scrapped text split on each new month
 			String[] ids = TimeZone.getAvailableIDs(-8 * 60 * 60 * 1000);
 			SimpleTimeZone pdt = new SimpleTimeZone(-8 * 60 * 60 * 1000, ids[0]);
 			Calendar calendar = new GregorianCalendar(pdt);
-			System.out.println("under calendarsetting");
+			//finding the current month
 
+			//setting up a hashmap linking the month string to the month int i get back from calendar
 			LinkedHashMap<Integer, String> monthMap = new LinkedHashMap<Integer, String>();
 			monthMap.put(0, "January");
 			monthMap.put(1, "February");
@@ -212,27 +201,33 @@ public class MainActivity extends Activity {
 
 			String ourMonth = (monthMap.get(calendar.get(Calendar.MONTH)));
 
+			//going over our monthlist and checking if the month is on the website
 			for (String veggies : monthList) {
-				System.out.println(veggies);
 				if (veggies.indexOf("Early " + ourMonth) > -1) {
+					//if the early month is on the site it updates the var and we set the text later
 					veggiesTextOne = veggies;
 				} else if (veggies.indexOf("Late " + ourMonth) > -1) {
+					//if the late part of the month is there, do the same
 					veggiesTextTwo = veggies;
 				} else {
 					System.out.print("still looking");
 				}
 			}
+			
 			if (veggiesTextOne == null && veggiesTextTwo == null) {
+				//if the veggies var hasn't been set then the month we were looking for isn't on the site aka has nothing in season
 				veggiesOne.setText("This month has nothing in season");
 				veggiesTwo.setText(" ");
 			} else {
 				if (veggiesTextOne != null) {
+					//posting the veggies to the UI
 					veggiesOne.setText(veggiesTextOne);
 				} else {
 					veggiesOne.setText("Early has nothing");
 				}
 
 				if (veggiesTextTwo != null) {
+					//posting the veggies to the UI
 					veggiesTwo.setText(veggiesTextTwo);
 				} else {
 					veggiesTwo.setText("Late has nothing");

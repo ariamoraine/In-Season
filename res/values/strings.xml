@@ -4,8 +4,9 @@
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_main">What\'s in Season?</string>
-    <string name="pickAState">Pick A State</string>
+    <string name="pickAState">Pick A State: </string>
 	<string-array name="states">
+	    <item>Pick A State</item>
 	    <item>Alabama</item>
 	    <item>Alaska</item>
 	    <item>Arizona</item>

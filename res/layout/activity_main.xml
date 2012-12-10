@@ -3,32 +3,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:entries="@array/states"
+        android:prompt="@string/pickAState" />
+
     <TextView
         android:id="@+id/veggiesOne"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:text="VEGGIES"
+        android:layout_below="@+id/spinner"
+        android:layout_centerHorizontal="true"
+        android:text=" "
         tools:context=".MainActivity" />
 
     <TextView
         android:id="@+id/veggiesTwo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_below="@+id/veggiesOne"
-        android:text="MORE VEGGIES" />
-    
-    <Spinner
-        android:id="@+id/spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/veggiesTwo"
-        android:layout_marginTop="67dp"
-        android:entries="@array/states"
-        android:prompt="@string/pickAState" />
+        android:layout_centerHorizontal="true"
+        android:text=" " />
 
 </RelativeLayout>
