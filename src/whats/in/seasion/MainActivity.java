@@ -144,11 +144,12 @@ public class MainActivity extends Activity {
 					html = html.replaceAll("</h3>", ", ");
 					html = html.replace("- ", "");
 					html = html.replaceAll("\\<.*?>", "");
-					html = html.replace("Christmas Trees,", "");
-					html = html.replace("Wreathes", "");
-					html = html.replace(
-							"Turkey Bourbon Red, Turkey Standard Bronze",
-							"Turkey");
+					html = html.replace("Wreathes", "Wreathes.");
+					html = html.replace("Halibut, Pacific,", "Halibut - Pacific,");
+					html = html.replace("Shrimp, Pink,", "Shrimp - Pink,");
+					html = html.replace("Turkey Bourbon Red", "Turkey - Bourbon Red");
+					html = html.replace("Turkey Standard Bronze",
+							"Turkey - Standard Bronze");
 					html = html.replace("Oysters,", "Oysters -");
 					//all of this is pulling all text we want out of the html tags
 					builder = new StringBuffer(); //html is not the var we want and we need to restart builder for next time this code is run

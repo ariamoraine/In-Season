@@ -1,7 +1,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="@drawable/soilgrounddirtcrosssection"
+    android:gravity="center" >
 
     <Spinner
         android:id="@+id/spinner"
@@ -9,17 +12,23 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:entries="@array/states"
-        android:prompt="@string/pickAState" />
+        android:textSize="30dip"
+        android:padding="5dp"
+        android:background="@drawable/rounded_whole"
+        android:entries="@array/states" />
 
     <TextView
         android:id="@+id/veggiesOne"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/spinner"
+        android:background="@drawable/rounded_top"
         android:layout_centerHorizontal="true"
-        android:text=" "
-        tools:context=".MainActivity" />
+        android:textSize="17dp"
+        android:typeface="serif"
+        tools:context=".MainActivity" 
+
+        />
 
     <TextView
         android:id="@+id/veggiesTwo"
@@ -27,6 +36,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/veggiesOne"
         android:layout_centerHorizontal="true"
-        android:text=" " />
+        android:textSize="17dp"
+        android:background="@drawable/rounded_bottom"
+        android:typeface="serif" />
 
 </RelativeLayout>
