@@ -15,9 +15,6 @@ import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
 import android.app.Activity;
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,6 +24,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
@@ -74,10 +72,10 @@ public class MainActivity extends Activity {
 				Object item = spinner.getSelectedItem(); // selected state
 				String stringOfItem = "";
 				stringOfItem = item.toString(); // convert
-
 				if (stringOfItem == "Pick A State") {
 					System.out.print("nothing here yet");
 				} else {
+					Toast.makeText(getApplicationContext(), "Getting data" , Toast.LENGTH_SHORT).show();
 					LinkedHashMap<String, String> map = new LinkedHashMap<String, String>(); // starting hashmap
 
 					for (int i = 0; i < states.length - 1; i++) { // filling hashmap
@@ -104,7 +102,7 @@ public class MainActivity extends Activity {
 			}
 
 			public void onNothingSelected(AdapterView<?> arg0) {
-				System.out.println("Nothing selected");
+				Toast.makeText(getApplicationContext(), "There is nothing selected", Toast.LENGTH_SHORT).show();
 			}
 
 		});
@@ -210,7 +208,7 @@ public class MainActivity extends Activity {
 					//if the late part of the month is there, do the same
 					veggiesTextTwo = veggies;
 				} else {
-					System.out.print("still looking");
+					System.out.println("looking");
 				}
 			}
 			
