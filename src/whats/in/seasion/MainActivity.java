@@ -28,20 +28,19 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
-	public TextView veggiesOne;
-	public TextView veggiesTwo;
-	public static URL stateUrl;
-	public static Spinner spinner;
-	public String testValue;
-	public String start;
-	public String end;
-	public String html;
-	BufferedReader reader;
-	public URL urlOfTestValue;
-	public String baseUrl = "http://www.simplesteps.org/eat-local/state/";
-	public StringBuffer builder = new StringBuffer();
+	//public TextView veggiesOne;
+	//public TextView veggiesTwo;
+	//public static URL stateUrl;
+	//public String testValue;
+	//public String start;
+	//public String end;
+	//public String html;
+	//BufferedReader reader;
+	//public URL urlOfTestValue;
+	private final static String BASE_URL = "http://www.simplesteps.org/eat-local/state/";
+	//public StringBuffer builder = new StringBuffer();
 
-	String[] states = { "Pick A State", "alabama", "alaska", "arizona",
+	private final static String[] STATES = { "Pick A State", "alabama", "alaska", "arizona",
 			"arkansas", "california", "colorado", "connecticut", "delaware",
 			"florida", "gorgia", "hawaii", "idaho", "illinois", "indiana",
 			"iowa", "kansas", "kentucky", "louisiana", "maine", "maryland",
@@ -63,32 +62,31 @@ public class MainActivity extends Activity {
 	public void spinner() {
 		//setting up my spinner
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_spinner_item, states);
-		spinner = (Spinner) findViewById(R.id.spinner);
+				android.R.layout.simple_spinner_item, STATES);
+		Spinner spinner = (Spinner) findViewById(R.id.spinner);
 		spinner.setAdapter(adapter);
 		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-
-			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-				Object item = spinner.getSelectedItem(); // selected state
-				String stringOfItem = "";
-				stringOfItem = item.toString(); // convert
-				if (stringOfItem == "Pick A State") {
+			@Override
+			public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long value) {
+				String stringOfItem = adapterView.getItemAtPosition(pos).toString();
+				
+				if (stringOfItem.equals("Pick A State")) {  // always use .equals to compare strings
 					System.out.print("nothing here yet");
 				} else {
 					Toast.makeText(getApplicationContext(), "Getting data" , Toast.LENGTH_SHORT).show();
 					LinkedHashMap<String, String> map = new LinkedHashMap<String, String>(); // starting hashmap
 
-					for (int i = 0; i < states.length - 1; i++) { // filling hashmap
-						map.put(states[i], baseUrl + states[i]);
+					for (int i = 0; i < STATES.length - 1; i++) { // filling hashmap
+						map.put(STATES[i], BASE_URL + STATES[i]);
 					}
 
 					Iterator<Map.Entry<String, String>> iter = map.entrySet()
-							.iterator();
+							.iterator();  
 
-					testValue = map.get(stringOfItem);
+					String testValue = map.get(stringOfItem);
 
 					try {
-						urlOfTestValue = new URL(testValue);
+						URL urlOfTestValue = new URL(testValue);
 
 						MyAsyncTask aTask = new MyAsyncTask();
 
@@ -113,8 +111,10 @@ public class MainActivity extends Activity {
 		
 		protected String doInBackground(URL... params) {
 			//where we do all of our site scraping
-
-			try {
+			URL urlOfTestValue = params[0];
+			BufferedReader reader = null;
+			String html = null;
+			try {	// whoa, being super safe.  can you refactor this to have less try's?
 				try {
 					//opening up the stream to our chosen URL
 					reader = new BufferedReader(new InputStreamReader(
@@ -126,13 +126,14 @@ public class MainActivity extends Activity {
 				}
 				try {
 					
+					StringBuffer builder = new StringBuffer();
 					for (String line; (line = reader.readLine()) != null;) {
 						builder.append(line.trim()).toString();
 						//adding all the lines to our stringBuffer
 					}
-					start = "<div class=\"state-produce\">";
+					String start = "<div class=\"state-produce\">";
 					//start is a built in part of string buffer and the end of it is where the html that we what is
-					end = "</div></div>";
+					String end = "</div></div>";
 					//end is also built in and the end of the html that we want.
 
 					String part = builder.substring(builder.indexOf(start)
@@ -149,11 +150,12 @@ public class MainActivity extends Activity {
 					html = html.replace("Shrimp, Pink,", "Shrimp - Pink,");
 					html = html.replace("Turkey Bourbon Red", "Turkey - Bourbon Red");
 					html = html.replace("Turkey Standard Bronze",
-							"Turkey - Standard Bronze");
-					html = html.replace("Oysters,", "Oysters -");
+							"Turkey - Standard Bronze");  // all of these seem like repetitive actions (replace a - with a "")
+					html = html.replace("Oysters,", "Oysters -");  // is there a way you can make this into a function?
 					//all of this is pulling all text we want out of the html tags
-					builder = new StringBuffer(); //html is not the var we want and we need to restart builder for next time this code is run
-
+					
+					// tadah! problem solved!
+					
 				} catch (IOException e) {
 					Log.i("showTime", e.getMessage());
 				}
@@ -171,8 +173,8 @@ public class MainActivity extends Activity {
 		protected void onPostExecute(String html) {
 			//onPostExecute is a built in part of AsyncTask and auto starts when doInBackground is done
 			
-			veggiesOne = (TextView) findViewById(R.id.veggiesOne);
-			veggiesTwo = (TextView) findViewById(R.id.veggiesTwo);
+			TextView veggiesOne = (TextView) findViewById(R.id.veggiesOne);
+			TextView veggiesTwo = (TextView) findViewById(R.id.veggiesTwo);
 			String veggiesTextOne = null;
 			String veggiesTextTwo = null;
 
@@ -184,10 +186,10 @@ public class MainActivity extends Activity {
 			//finding the current month
 
 			//setting up a hashmap linking the month string to the month int i get back from calendar
-			LinkedHashMap<Integer, String> monthMap = new LinkedHashMap<Integer, String>();
-			monthMap.put(0, "January");
-			monthMap.put(1, "February");
-			monthMap.put(2, "March");
+			LinkedHashMap<Integer, String> monthMap = new LinkedHashMap<Integer, String>();  // is this going to change?  Probably not.
+			monthMap.put(0, "January");  	// putting it here, you're recreating it every single time this function is run.
+			monthMap.put(1, "February");	// try moving it to a constant at the top
+			monthMap.put(2, "March");		// or look into creating an Enum class
 			monthMap.put(3, "April");
 			monthMap.put(4, "May");
 			monthMap.put(5, "June");
