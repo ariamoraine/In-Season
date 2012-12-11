@@ -40,7 +40,7 @@ public class MainActivity extends Activity {
 	private final static String BASE_URL = "http://www.simplesteps.org/eat-local/state/";
 	//public StringBuffer builder = new StringBuffer();
 
-	private final static String[] states = { "Pick A State", "alabama", "alaska", "arizona",
+	private final static String[] STATES = { "Pick A State", "alabama", "alaska", "arizona",
 			"arkansas", "california", "colorado", "connecticut", "delaware",
 			"florida", "gorgia", "hawaii", "idaho", "illinois", "indiana",
 			"iowa", "kansas", "kentucky", "louisiana", "maine", "maryland",
@@ -62,7 +62,7 @@ public class MainActivity extends Activity {
 	public void spinner() {
 		//setting up my spinner
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_spinner_item, states);
+				android.R.layout.simple_spinner_item, STATES);
 		Spinner spinner = (Spinner) findViewById(R.id.spinner);
 		spinner.setAdapter(adapter);
 		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -76,8 +76,8 @@ public class MainActivity extends Activity {
 					Toast.makeText(getApplicationContext(), "Getting data" , Toast.LENGTH_SHORT).show();
 					LinkedHashMap<String, String> map = new LinkedHashMap<String, String>(); // starting hashmap
 
-					for (int i = 0; i < states.length - 1; i++) { // filling hashmap
-						map.put(states[i], BASE_URL + states[i]);
+					for (int i = 0; i < STATES.length - 1; i++) { // filling hashmap
+						map.put(STATES[i], BASE_URL + STATES[i]);
 					}
 
 					Iterator<Map.Entry<String, String>> iter = map.entrySet()
@@ -114,7 +114,7 @@ public class MainActivity extends Activity {
 			URL urlOfTestValue = params[0];
 			BufferedReader reader = null;
 			String html = null;
-			try {
+			try {	// whoa, being super safe.  can you refactor this to have less try's?
 				try {
 					//opening up the stream to our chosen URL
 					reader = new BufferedReader(new InputStreamReader(
@@ -150,8 +150,8 @@ public class MainActivity extends Activity {
 					html = html.replace("Shrimp, Pink,", "Shrimp - Pink,");
 					html = html.replace("Turkey Bourbon Red", "Turkey - Bourbon Red");
 					html = html.replace("Turkey Standard Bronze",
-							"Turkey - Standard Bronze");
-					html = html.replace("Oysters,", "Oysters -");
+							"Turkey - Standard Bronze");  // all of these seem like repetitive actions (replace a - with a "")
+					html = html.replace("Oysters,", "Oysters -");  // is there a way you can make this into a function?
 					//all of this is pulling all text we want out of the html tags
 					
 					// tadah! problem solved!
@@ -186,10 +186,10 @@ public class MainActivity extends Activity {
 			//finding the current month
 
 			//setting up a hashmap linking the month string to the month int i get back from calendar
-			LinkedHashMap<Integer, String> monthMap = new LinkedHashMap<Integer, String>();
-			monthMap.put(0, "January");
-			monthMap.put(1, "February");
-			monthMap.put(2, "March");
+			LinkedHashMap<Integer, String> monthMap = new LinkedHashMap<Integer, String>();  // is this going to change?  Probably not.
+			monthMap.put(0, "January");  	// putting it here, you're recreating it every single time this function is run.
+			monthMap.put(1, "February");	// try moving it to a constant at the top
+			monthMap.put(2, "March");		// or look into creating an Enum class
 			monthMap.put(3, "April");
 			monthMap.put(4, "May");
 			monthMap.put(5, "June");
