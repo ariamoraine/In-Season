@@ -31,7 +31,7 @@ public class MainActivity extends Activity {
 	public TextView veggiesOne;
 	public TextView veggiesTwo;
 	public static URL stateUrl;
-	public static Spinner spinner;
+	//public  Spinner spinner;
 	public String testValue;
 	public String start;
 	public String end;
@@ -64,14 +64,13 @@ public class MainActivity extends Activity {
 		//setting up my spinner
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
 				android.R.layout.simple_spinner_item, states);
-		spinner = (Spinner) findViewById(R.id.spinner);
+		Spinner spinner = (Spinner) findViewById(R.id.spinner);
 		spinner.setAdapter(adapter);
 		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-
-			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-				Object item = spinner.getSelectedItem(); // selected state
-				String stringOfItem = "";
-				stringOfItem = item.toString(); // convert
+			@Override
+			public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long value) {
+				String stringOfItem = adapterView.getItemAtPosition(pos).toString();
+				
 				if (stringOfItem == "Pick A State") {
 					System.out.print("nothing here yet");
 				} else {
