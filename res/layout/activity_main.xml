@@ -2,42 +2,51 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center"
     android:background="@drawable/soilgrounddirtcrosssection"
-    android:gravity="center" >
+    android:visibility="visible" >
 
     <Spinner
         android:id="@+id/spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:textSize="30dip"
-        android:padding="5dp"
+        android:layout_marginTop="76dp"
         android:background="@drawable/rounded_whole"
-        android:entries="@array/states" />
+        android:entries="@array/states"
+        android:padding="5dp"
+        android:textSize="30dip" />
 
     <TextView
         android:id="@+id/veggiesOne"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:layout_below="@+id/spinner"
-        android:background="@drawable/rounded_top"
         android:layout_centerHorizontal="true"
-        android:textSize="17dp"
+        android:background="@drawable/rounded_top"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:scrollbars="vertical"
+        android:textSize="20dp"
         android:typeface="serif"
-        tools:context=".MainActivity" 
-
-        />
+        android:visibility="invisible"
+        tools:context=".MainActivity" />
 
     <TextView
         android:id="@+id/veggiesTwo"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/veggiesOne"
         android:layout_centerHorizontal="true"
-        android:textSize="17dp"
+        android:layout_below="@+id/veggiesOne"
         android:background="@drawable/rounded_bottom"
-        android:typeface="serif" />
+        android:scrollbars="vertical"
+        android:textSize="20dp"
+        android:typeface="serif"
+        android:visibility="invisible" />
 
 </RelativeLayout>

@@ -15,6 +15,9 @@ import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
 import android.app.Activity;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,12 +34,12 @@ public class MainActivity extends Activity {
 	private final static String BASE_URL = "http://www.simplesteps.org/eat-local/state/";
 
 
-	private final static String[] STATES = { "Pick A State", "alabama", "alaska", "arizona",
+	private final static String[] STATES = { "Click Here Pick A State", "alabama", "alaska", "arizona",
 			"arkansas", "california", "colorado", "connecticut", "delaware",
-			"florida", "gorgia", "hawaii", "idaho", "illinois", "indiana",
+			"florida", "georgia", "hawaii", "idaho", "illinois", "indiana",
 			"iowa", "kansas", "kentucky", "louisiana", "maine", "maryland",
-			"massachustts", "michigan", "minnesota", "mississippi", "missouri",
-			"montana", "nebraska", "nevada", "new-hampshire", "new-jersry",
+			"massachusetts", "michigan", "minnesota", "mississippi", "missouri",
+			"montana", "nebraska", "nevada", "new-hampshire", "new-jersey",
 			"new-mexico", "new-york", "north-carolina", "north-dakota", "ohio",
 			"oklahoma", "oregon", "pennsylvania", "rhode-island",
 			"south-carolina", "south-dakota", "tennessee", "texas", "utah",
@@ -46,12 +49,26 @@ public class MainActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		isNetworkAvailable();
 		spinner();
 
 	}
+	
+	public boolean isNetworkAvailable() {
+	    ConnectivityManager cm = (ConnectivityManager) 
+	      getSystemService(Context.CONNECTIVITY_SERVICE);
+	    NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+	    // if no network is available networkInfo will be null
+	    // otherwise check if we are connected
+	    if (networkInfo != null && networkInfo.isConnected()) {
+	        return true;
+	    }
+	    return false;
+	} 
 
 	public void spinner() {
 		//setting up the spinner
+		if (isNetworkAvailable() == true){
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
 				android.R.layout.simple_spinner_item, STATES);
 		Spinner spinner = (Spinner) findViewById(R.id.spinner);
@@ -61,7 +78,7 @@ public class MainActivity extends Activity {
 			public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long value) {
 				String stringOfItem = adapterView.getItemAtPosition(pos).toString();
 				
-				if (stringOfItem.equals("Pick A State")) {
+				if (stringOfItem.equals("Click Here Pick A State")) {
 					System.out.print("nothing here yet");
 				} else {
 					Toast.makeText(getApplicationContext(), "Getting data" , Toast.LENGTH_SHORT).show();
@@ -95,11 +112,11 @@ public class MainActivity extends Activity {
 			}
 
 		});
+	}else{ Toast.makeText(getApplicationContext(), "There is no network available", Toast.LENGTH_LONG).show();
+	}
 	}
 
 	public class MyAsyncTask extends AsyncTask<URL, Void, String> {
-		//the AsyncTask for scraping
-		
 		protected String doInBackground(URL... params) {
 			//where we do all of our site scraping
 			URL urlOfTestValue = params[0];
@@ -190,7 +207,8 @@ public class MainActivity extends Activity {
 			monthMap.put(11, "December");
 
 			String ourMonth = (monthMap.get(calendar.get(Calendar.MONTH)));
-
+//			String ourEnumMonth = MonthList.getMonth(Calendar.MONTH);
+			
 			//going over our monthlist and checking if the month is on the website
 			for (String veggies : monthList) {
 				if (veggies.indexOf("Early " + ourMonth) > -1) {
@@ -206,11 +224,12 @@ public class MainActivity extends Activity {
 			
 			if (veggiesTextOne == null && veggiesTextTwo == null) {
 				//if the veggies var hasn't been set then the month we were looking for isn't on the site aka has nothing in season
-				veggiesOne.setText("This month has nothing in season");
+				veggiesOne.setText("There is nothing in season this month.");
 				veggiesTwo.setText(" ");
 			} else {
 				if (veggiesTextOne != null) {
 					//posting the veggies to the UI
+					veggiesOne.setVisibility(View.VISIBLE);
 					veggiesOne.setText(veggiesTextOne);
 				} else {
 					veggiesOne.setText("Early has nothing");
@@ -218,6 +237,7 @@ public class MainActivity extends Activity {
 
 				if (veggiesTextTwo != null) {
 					//posting the veggies to the UI
+					veggiesTwo.setVisibility(View.VISIBLE);
 					veggiesTwo.setText(veggiesTextTwo);
 				} else {
 					veggiesTwo.setText("Late has nothing");
@@ -225,4 +245,5 @@ public class MainActivity extends Activity {
 			}
 		}
 	}
-}
+
+	}
