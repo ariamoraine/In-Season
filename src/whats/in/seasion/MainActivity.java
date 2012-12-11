@@ -66,7 +66,7 @@ public class MainActivity extends Activity {
 		Spinner spinner = (Spinner) findViewById(R.id.spinner);
 		spinner.setAdapter(adapter);
 		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-			@Override
+			
 			public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long value) {
 				String stringOfItem = adapterView.getItemAtPosition(pos).toString();
 				
