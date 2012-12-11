@@ -1,6 +1,6 @@
 bin/
 gen/
-*.properties
+local.properties
 *.class
 *.classpath
 *.project
