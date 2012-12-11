@@ -28,20 +28,19 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
-	public TextView veggiesOne;
-	public TextView veggiesTwo;
-	public static URL stateUrl;
-	//public  Spinner spinner;
-	public String testValue;
-	public String start;
-	public String end;
-	public String html;
-	BufferedReader reader;
-	public URL urlOfTestValue;
-	public String baseUrl = "http://www.simplesteps.org/eat-local/state/";
-	public StringBuffer builder = new StringBuffer();
+	//public TextView veggiesOne;
+	//public TextView veggiesTwo;
+	//public static URL stateUrl;
+	//public String testValue;
+	//public String start;
+	//public String end;
+	//public String html;
+	//BufferedReader reader;
+	//public URL urlOfTestValue;
+	private final static String BASE_URL = "http://www.simplesteps.org/eat-local/state/";
+	//public StringBuffer builder = new StringBuffer();
 
-	String[] states = { "Pick A State", "alabama", "alaska", "arizona",
+	private final static String[] states = { "Pick A State", "alabama", "alaska", "arizona",
 			"arkansas", "california", "colorado", "connecticut", "delaware",
 			"florida", "gorgia", "hawaii", "idaho", "illinois", "indiana",
 			"iowa", "kansas", "kentucky", "louisiana", "maine", "maryland",
@@ -71,23 +70,23 @@ public class MainActivity extends Activity {
 			public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long value) {
 				String stringOfItem = adapterView.getItemAtPosition(pos).toString();
 				
-				if (stringOfItem == "Pick A State") {
+				if (stringOfItem.equals("Pick A State")) {  // always use .equals to compare strings
 					System.out.print("nothing here yet");
 				} else {
 					Toast.makeText(getApplicationContext(), "Getting data" , Toast.LENGTH_SHORT).show();
 					LinkedHashMap<String, String> map = new LinkedHashMap<String, String>(); // starting hashmap
 
 					for (int i = 0; i < states.length - 1; i++) { // filling hashmap
-						map.put(states[i], baseUrl + states[i]);
+						map.put(states[i], BASE_URL + states[i]);
 					}
 
 					Iterator<Map.Entry<String, String>> iter = map.entrySet()
-							.iterator();
+							.iterator();  
 
-					testValue = map.get(stringOfItem);
+					String testValue = map.get(stringOfItem);
 
 					try {
-						urlOfTestValue = new URL(testValue);
+						URL urlOfTestValue = new URL(testValue);
 
 						MyAsyncTask aTask = new MyAsyncTask();
 
@@ -112,7 +111,9 @@ public class MainActivity extends Activity {
 		
 		protected String doInBackground(URL... params) {
 			//where we do all of our site scraping
-
+			URL urlOfTestValue = params[0];
+			BufferedReader reader = null;
+			String html = null;
 			try {
 				try {
 					//opening up the stream to our chosen URL
@@ -125,13 +126,14 @@ public class MainActivity extends Activity {
 				}
 				try {
 					
+					StringBuffer builder = new StringBuffer();
 					for (String line; (line = reader.readLine()) != null;) {
 						builder.append(line.trim()).toString();
 						//adding all the lines to our stringBuffer
 					}
-					start = "<div class=\"state-produce\">";
+					String start = "<div class=\"state-produce\">";
 					//start is a built in part of string buffer and the end of it is where the html that we what is
-					end = "</div></div>";
+					String end = "</div></div>";
 					//end is also built in and the end of the html that we want.
 
 					String part = builder.substring(builder.indexOf(start)
@@ -151,8 +153,9 @@ public class MainActivity extends Activity {
 							"Turkey - Standard Bronze");
 					html = html.replace("Oysters,", "Oysters -");
 					//all of this is pulling all text we want out of the html tags
-					builder = new StringBuffer(); //html is not the var we want and we need to restart builder for next time this code is run
-
+					
+					// tadah! problem solved!
+					
 				} catch (IOException e) {
 					Log.i("showTime", e.getMessage());
 				}
@@ -170,8 +173,8 @@ public class MainActivity extends Activity {
 		protected void onPostExecute(String html) {
 			//onPostExecute is a built in part of AsyncTask and auto starts when doInBackground is done
 			
-			veggiesOne = (TextView) findViewById(R.id.veggiesOne);
-			veggiesTwo = (TextView) findViewById(R.id.veggiesTwo);
+			TextView veggiesOne = (TextView) findViewById(R.id.veggiesOne);
+			TextView veggiesTwo = (TextView) findViewById(R.id.veggiesTwo);
 			String veggiesTextOne = null;
 			String veggiesTextTwo = null;
 
