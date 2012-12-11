@@ -28,17 +28,8 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
-	//public TextView veggiesOne;
-	//public TextView veggiesTwo;
-	//public static URL stateUrl;
-	//public String testValue;
-	//public String start;
-	//public String end;
-	//public String html;
-	//BufferedReader reader;
-	//public URL urlOfTestValue;
 	private final static String BASE_URL = "http://www.simplesteps.org/eat-local/state/";
-	//public StringBuffer builder = new StringBuffer();
+
 
 	private final static String[] STATES = { "Pick A State", "alabama", "alaska", "arizona",
 			"arkansas", "california", "colorado", "connecticut", "delaware",
@@ -60,7 +51,7 @@ public class MainActivity extends Activity {
 	}
 
 	public void spinner() {
-		//setting up my spinner
+		//setting up the spinner
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
 				android.R.layout.simple_spinner_item, STATES);
 		Spinner spinner = (Spinner) findViewById(R.id.spinner);
@@ -70,7 +61,7 @@ public class MainActivity extends Activity {
 			public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long value) {
 				String stringOfItem = adapterView.getItemAtPosition(pos).toString();
 				
-				if (stringOfItem.equals("Pick A State")) {  // always use .equals to compare strings
+				if (stringOfItem.equals("Pick A State")) {
 					System.out.print("nothing here yet");
 				} else {
 					Toast.makeText(getApplicationContext(), "Getting data" , Toast.LENGTH_SHORT).show();
@@ -107,7 +98,7 @@ public class MainActivity extends Activity {
 	}
 
 	public class MyAsyncTask extends AsyncTask<URL, Void, String> {
-		//the AsyncTask for our scraping
+		//the AsyncTask for scraping
 		
 		protected String doInBackground(URL... params) {
 			//where we do all of our site scraping
@@ -153,8 +144,6 @@ public class MainActivity extends Activity {
 							"Turkey - Standard Bronze");  // all of these seem like repetitive actions (replace a - with a "")
 					html = html.replace("Oysters,", "Oysters -");  // is there a way you can make this into a function?
 					//all of this is pulling all text we want out of the html tags
-					
-					// tadah! problem solved!
 					
 				} catch (IOException e) {
 					Log.i("showTime", e.getMessage());
