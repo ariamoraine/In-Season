@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
@@ -20,6 +21,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -34,7 +36,7 @@ public class MainActivity extends Activity {
 	private final static String BASE_URL = "http://www.simplesteps.org/eat-local/state/";
 
 
-	private final static String[] STATES = { "Click Here Pick A State", "alabama", "alaska", "arizona",
+	private final static String[] STATES = { "Click Here, Pick A State", "alabama", "alaska", "arizona",
 			"arkansas", "california", "colorado", "connecticut", "delaware",
 			"florida", "georgia", "hawaii", "idaho", "illinois", "indiana",
 			"iowa", "kansas", "kentucky", "louisiana", "maine", "maryland",
@@ -78,10 +80,10 @@ public class MainActivity extends Activity {
 			public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long value) {
 				String stringOfItem = adapterView.getItemAtPosition(pos).toString();
 				
-				if (stringOfItem.equals("Click Here Pick A State")) {
+				if (stringOfItem.equals("Click Here, Pick A State")) {
 					System.out.print("nothing here yet");
 				} else {
-					Toast.makeText(getApplicationContext(), "Getting data" , Toast.LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), "Getting data" , Toast.LENGTH_LONG).show();
 					LinkedHashMap<String, String> map = new LinkedHashMap<String, String>(); // starting hashmap
 
 					for (int i = 0; i < STATES.length - 1; i++) { // filling hashmap
@@ -122,7 +124,7 @@ public class MainActivity extends Activity {
 			URL urlOfTestValue = params[0];
 			BufferedReader reader = null;
 			String html = null;
-			try {	// whoa, being super safe.  can you refactor this to have less try's?
+			try {
 				try {
 					//opening up the stream to our chosen URL
 					reader = new BufferedReader(new InputStreamReader(
@@ -181,9 +183,9 @@ public class MainActivity extends Activity {
 			
 			TextView veggiesOne = (TextView) findViewById(R.id.veggiesOne);
 			TextView veggiesTwo = (TextView) findViewById(R.id.veggiesTwo);
-			String veggiesTextOne = null;
-			String veggiesTextTwo = null;
-
+			String[] earlyMonthVeggieArray = null;
+			String[] lateMonthVeggieArray = null;
+			
 			String[] monthList = html.split("NEW MONTH");
 			//monthList is an array of our scrapped text split on each new month
 			String[] ids = TimeZone.getAvailableIDs(-8 * 60 * 60 * 1000);
@@ -207,38 +209,44 @@ public class MainActivity extends Activity {
 			monthMap.put(11, "December");
 
 			String ourMonth = (monthMap.get(calendar.get(Calendar.MONTH)));
-//			String ourEnumMonth = MonthList.getMonth(Calendar.MONTH);
+			String[] eachMonthList = ourMonth.split(",");
+			String currentMonth = eachMonthList[0];
 			
 			//going over our monthlist and checking if the month is on the website
 			for (String veggies : monthList) {
 				if (veggies.indexOf("Early " + ourMonth) > -1) {
 					//if the early month is on the site it updates the var and we set the text later
-					veggiesTextOne = veggies;
+					String[] wholeEarlyMonthArray = veggies.split(",");
+					earlyMonthVeggieArray = Arrays.copyOfRange(wholeEarlyMonthArray, 1, wholeEarlyMonthArray.length);
+//					System.out.print(Arrays.toString(wholeEarlyMonthArray));
 				} else if (veggies.indexOf("Late " + ourMonth) > -1) {
 					//if the late part of the month is there, do the same
-					veggiesTextTwo = veggies;
+					String[] wholeLateMonthArray = veggies.split(",");
+					lateMonthVeggieArray = Arrays.copyOfRange(wholeLateMonthArray, 1, wholeLateMonthArray.length);
+					
 				} else {
-					System.out.println("looking");
+//					Toast.makeText(getApplicationContext(), "Getting Data", Toast.LENGTH_SHORT).show();
+//					System.out.println("Looking");
 				}
 			}
 			
-			if (veggiesTextOne == null && veggiesTextTwo == null) {
+			if (earlyMonthVeggieArray == null && lateMonthVeggieArray == null) {
 				//if the veggies var hasn't been set then the month we were looking for isn't on the site aka has nothing in season
 				veggiesOne.setText("There is nothing in season this month.");
 				veggiesTwo.setText(" ");
 			} else {
-				if (veggiesTextOne != null) {
+				if (earlyMonthVeggieArray != null) {
 					//posting the veggies to the UI
 					veggiesOne.setVisibility(View.VISIBLE);
-					veggiesOne.setText(veggiesTextOne);
+					veggiesOne.setText(Html.fromHtml("<b>" + "Early " + currentMonth + "</b>" + Arrays.toString(earlyMonthVeggieArray).replace("[","").replace("]", "")));
 				} else {
 					veggiesOne.setText("Early has nothing");
 				}
 
-				if (veggiesTextTwo != null) {
+				if (lateMonthVeggieArray != null) {
 					//posting the veggies to the UI
 					veggiesTwo.setVisibility(View.VISIBLE);
-					veggiesTwo.setText(veggiesTextTwo);
+					veggiesTwo.setText(Html.fromHtml("<b>" + "Late " + currentMonth + "</b>" + Arrays.toString(lateMonthVeggieArray).replace("[","").replace("]", "")));
 				} else {
 					veggiesTwo.setText("Late has nothing");
 				}
